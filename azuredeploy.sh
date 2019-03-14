@@ -308,7 +308,10 @@ system_update()
     #yum  -y update --exclude=WALinuxAgent
     #yum  -y update
     #yum -x 'intel-*' -x 'kernel*' -x '*microsoft-*' -x 'msft-*'  -y update --exclude=WALinuxAgent
-    yum --exclude WALinuxAgent,intel-*,kernel*,kernel-headers*,*microsoft-*,msft-* -y update 
+    if [[ "${HEADNODE_SIZE}" =~ "H" ]] && [[ "${WORKERNODE_SIZE}" =~ "H" ]] && [[ "${HEADNODE_SIZE}" =~ "R" ]] && [[ "${WORKERNODE_SIZE}" =~ "R" ]] && [[ "$skuName" == "7.3" ]] ; then
+	    return
+    fi
+    yum --exclude WALinuxAgent,intel-*,kernel*,kernel-headers*,*microsoft-*,msft-* -y update
 
     set_time
 }
@@ -459,7 +462,11 @@ install_pkgs_all()
     		install_docker_apps
 	fi
 
-    install_ib
+	if [[ "${HEADNODE_SIZE}" =~ "H" ]] && [[ "${WORKERNODE_SIZE}" =~ "H" ]] && [[ "${HEADNODE_SIZE}" =~ "R" ]] && [[ "${WORKERNODE_SIZE}" =~ "R" ]] && [[ "$skuName" == "7.3" ]] ; then
+		return
+	fi
+
+	install_ib
 }
 
 
